@@ -7,8 +7,10 @@ import { env } from '../config/env.js';
 export const securityMiddleware = [
   helmet(),
   cors({ origin: env.allowedOrigins, credentials: true }),
-  mongoSanitize(),
 ];
+
+// يجب أن يُسجَّل بعد express.json حتى يجد req.body ويعقّمه
+export const sanitizeMiddleware = mongoSanitize();
 
 export const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

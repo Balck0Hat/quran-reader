@@ -77,7 +77,23 @@ const ReaderPage = () => {
     }
   }, [verses, startVerse]);
 
-  useEffect(() => stop(), [chapterId, reciterId, stop]);
+  // تشغيل يدوي يلغي أي انتقال تلقائي معلّق حتى لا يخطف التشغيل لاحقاً
+  const handleManualPlay = useCallback(
+    (verse) => {
+      pendingIndexRef.current = null;
+      startVerse(verse);
+    },
+    [startVerse]
+  );
+
+  useEffect(() => {
+    pendingIndexRef.current = null;
+    stop();
+  }, [chapterId, reciterId, stop]);
+
+  useEffect(() => {
+    jumpedRef.current = false;
+  }, [chapterId]);
 
   const initialAyah = Number(searchParams.get('ayah')) || 0;
   useEffect(() => {
@@ -128,7 +144,7 @@ const ReaderPage = () => {
               isCurrent={playingKey === verse.verse_key}
               isPlaying={playingKey === verse.verse_key && isPlaying}
               isBookmarked={bookmarks.includes(verse.verse_key)}
-              onPlay={startVerse}
+              onPlay={handleManualPlay}
               onOpenInsight={setInsightKey}
               onToggleBookmark={toggleBookmark}
             />

@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   securityMiddleware,
+  sanitizeMiddleware,
   rateLimiter,
 } from './shared/middleware/security.js';
 import {
@@ -15,6 +16,7 @@ export const app = express();
 
 app.use(securityMiddleware);
 app.use(express.json({ limit: '10kb' }));
+app.use(sanitizeMiddleware);
 app.use('/api', rateLimiter);
 
 app.use('/api/v1/quran', quranRoutes);
