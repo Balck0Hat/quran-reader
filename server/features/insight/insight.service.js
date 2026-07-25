@@ -18,6 +18,21 @@ export const getTafsir = async ({ tafsirId, chapter, verse }) => {
   };
 };
 
+// بعض المصادر تُضمِّن سطر البسملة في بداية شرح الآية الأولى — نحذفه
+const BISMILLAH_BARE = 'بسم الله الرحمن الرحيم';
+const bareLetters = (line) =>
+  line
+    .replace(/[ً-ْٰۖ-ۭـ]/g, '')
+    .replace(/ٱ/g, 'ا')
+    .trim();
+
+const removeBismillahLines = (text) =>
+  text
+    .split('\n')
+    .filter((line) => bareLetters(line) !== BISMILLAH_BARE)
+    .join('\n')
+    .trim();
+
 export const getLinguistic = async ({ kind, chapter, verse }) => {
   const slug = LINGUISTIC_SOURCES[kind];
   if (!slug) {
@@ -26,5 +41,5 @@ export const getLinguistic = async ({ kind, chapter, verse }) => {
   const data = await fetchJsonCached(
     `${env.tafsirCdnBase}/${slug}/${chapter}/${verse}.json`
   );
-  return { text: data.text || '' };
+  return { text: removeBismillahLines(data.text || '') };
 };

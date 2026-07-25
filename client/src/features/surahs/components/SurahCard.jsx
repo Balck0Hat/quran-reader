@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CheckCircle2 } from 'lucide-react';
+import { BookOpenText, CheckCircle2 } from 'lucide-react';
 import { toArabicNumber } from '../../../shared/utils/arabicNumber.js';
 
 const SurahCard = ({ chapter, readCount }) => {
@@ -7,10 +7,13 @@ const SurahCard = ({ chapter, readCount }) => {
   const isComplete = readCount >= chapter.verses_count;
 
   return (
-    <Link
-      to={`/surah/${chapter.id}`}
-      className="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-neutral-200 bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:border-neutral-800 dark:bg-neutral-925 dark:hover:border-primary-800"
-    >
+    <div className="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-neutral-200 bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-925 dark:hover:border-primary-800">
+      <Link
+        to={`/surah/${chapter.id}`}
+        aria-label={`قراءة سورة ${chapter.name_arabic}`}
+        className="absolute inset-0 z-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+      />
+
       <span
         aria-hidden="true"
         className="flex h-11 w-11 shrink-0 rotate-45 items-center justify-center rounded-md border border-primary-300 bg-primary-50 transition-colors group-hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950/40"
@@ -30,12 +33,22 @@ const SurahCard = ({ chapter, readCount }) => {
         </span>
       </span>
 
-      {isComplete && (
-        <CheckCircle2
-          className="ms-auto h-5 w-5 shrink-0 text-success-500"
-          aria-label="سورة مكتملة"
-        />
-      )}
+      <span className="ms-auto flex shrink-0 items-center gap-1">
+        {isComplete && (
+          <CheckCircle2
+            className="h-5 w-5 text-success-500"
+            aria-label="سورة مكتملة"
+          />
+        )}
+        <Link
+          to={`/surah/${chapter.id}/ayah/1`}
+          aria-label={`تدبر سورة ${chapter.name_arabic} آيةً آية`}
+          title="تدبر آيةً آية"
+          className="relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-full text-neutral-400 transition-colors hover:bg-primary-100 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:hover:bg-neutral-900 dark:hover:text-primary-400"
+        >
+          <BookOpenText className="h-4.5 w-4.5" aria-hidden="true" />
+        </Link>
+      </span>
 
       {percent > 0 && !isComplete && (
         <span
@@ -48,7 +61,7 @@ const SurahCard = ({ chapter, readCount }) => {
           />
         </span>
       )}
-    </Link>
+    </div>
   );
 };
 
