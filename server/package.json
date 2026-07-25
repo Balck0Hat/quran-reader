@@ -1,0 +1,28 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.22.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^8.6.0",
+    "helmet": "^8.3.0",
+    "mongoose": "^9.8.0",
+    "zod": "^4.4.3"
+  },
+  "type": "module",
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  }
+}

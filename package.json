@@ -1,0 +1,15 @@
+{
+  "name": "quran-reader",
+  "private": true,
+  "description": "رتِّل — مصحف رقمي للقراءة والاستماع والتدبر",
+  "scripts": {
+    "dev": "concurrently -n server,client -c yellow,cyan \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "test": "npm test --prefix server",
+    "build": "npm run build --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.4"
+  }
+}
