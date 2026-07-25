@@ -107,6 +107,14 @@ body {
   @apply text-[0.95rem] leading-loose text-neutral-800 dark:text-neutral-200;
   white-space: pre-line;
 }
+.insight-prose p {
+  margin-block-end: 0.75em;
+}
+.insight-prose span[class],
+.insight-prose h2,
+.insight-prose h3 {
+  @apply font-semibold text-primary-700 dark:text-primary-400;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {

@@ -33,6 +33,19 @@ export const getVerses = async ({ chapterId, page, perPage, reciterId }) => {
   };
 };
 
+export const getVerse = async ({ chapter, verse, reciterId }) => {
+  const params = new URLSearchParams({
+    language: 'ar',
+    words: 'false',
+    fields: 'text_uthmani',
+    audio: String(reciterId),
+  });
+  const data = await fetchJsonCached(
+    `${env.quranApiBase}/verses/by_key/${chapter}:${verse}?${params}`
+  );
+  return withAudioUrl(data.verse);
+};
+
 export const getReciters = async () => {
   const data = await fetchJsonCached(
     `${env.quranApiBase}/resources/recitations?language=ar`

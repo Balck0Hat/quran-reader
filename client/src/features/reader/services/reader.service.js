@@ -12,6 +12,16 @@ export const fetchVerses = async ({ chapterId, page, reciterId }) => {
 let recitersCache = null;
 let tafsirsCache = null;
 
+export const fetchVerse = async ({ chapter, verse, reciterId }) => {
+  const key = `verse:${chapter}:${verse}:${reciterId}`;
+  if (insightCache.has(key)) return insightCache.get(key);
+  const { data } = await apiFetch(
+    `/quran/verse/${chapter}/${verse}?reciter=${reciterId}`
+  );
+  insightCache.set(key, data);
+  return data;
+};
+
 export const fetchReciters = async () => {
   if (recitersCache) return recitersCache;
   const { data } = await apiFetch('/quran/reciters');

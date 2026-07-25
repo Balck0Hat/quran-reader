@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useRef } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ErrorState, Skeleton } from '../../shared/components/ui/index.js';
 import { useProgressStore } from '../progress/index.js';
 import { useReaderStore, FONT_SIZES } from './store/readerStore.js';
@@ -11,7 +11,6 @@ import ReaderHeader from './components/ReaderHeader.jsx';
 import SurahBanner from './components/SurahBanner.jsx';
 import AyahCard from './components/AyahCard.jsx';
 import AudioBar from './components/AudioBar.jsx';
-import InsightDrawer from './components/InsightDrawer.jsx';
 
 const scrollToVerse = (verseNumber) =>
   document
@@ -29,7 +28,15 @@ const ReaderPage = () => {
   const bookmarks = useProgressStore((state) => state.bookmarks);
   const toggleBookmark = useProgressStore((state) => state.toggleBookmark);
   const savePosition = useProgressStore((state) => state.savePosition);
-  const [insightKey, setInsightKey] = useState(null);
+  const navigate = useNavigate();
+
+  const openInsight = useCallback(
+    (verseKey) => {
+      const [chapterPart, versePart] = verseKey.split(':');
+      navigate(`/surah/${chapterPart}/ayah/${versePart}`);
+    },
+    [navigate]
+  );
 
   const versesRef = useRef([]);
   const hasMoreRef = useRef(false);
@@ -145,7 +152,7 @@ const ReaderPage = () => {
               isPlaying={playingKey === verse.verse_key && isPlaying}
               isBookmarked={bookmarks.includes(verse.verse_key)}
               onPlay={handleManualPlay}
-              onOpenInsight={setInsightKey}
+              onOpenInsight={openInsight}
               onToggleBookmark={toggleBookmark}
             />
           ))}
@@ -168,12 +175,6 @@ const ReaderPage = () => {
         onNext={() => stepFrom(playingKey, 1)}
         onPrevious={() => stepFrom(playingKey, -1)}
         onStop={stop}
-      />
-      <InsightDrawer
-        verseKey={insightKey}
-        chapterName={chapter ? `سورة ${chapter.name_arabic}` : ''}
-        isOpen={Boolean(insightKey)}
-        onClose={() => setInsightKey(null)}
       />
     </main>
   );

@@ -12,6 +12,11 @@ const ReaderPage = lazy(() =>
     default: m.ReaderPage,
   }))
 );
+const AyahPage = lazy(() =>
+  import('../features/reader/index.js').then((m) => ({
+    default: m.AyahPage,
+  }))
+);
 
 export const AppRouter = () => (
   <BrowserRouter>
@@ -19,6 +24,7 @@ export const AppRouter = () => (
       <Routes>
         <Route path="/" element={<SurahIndexPage />} />
         <Route path="/surah/:chapterId" element={<ReaderPage />} />
+        <Route path="/surah/:chapterId/ayah/:verseNumber" element={<AyahPage />} />
         <Route path="*" element={<SurahIndexPage />} />
       </Routes>
     </Suspense>

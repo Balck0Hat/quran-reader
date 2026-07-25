@@ -1,7 +1,11 @@
 import { asyncHandler } from '../../shared/utils/asyncHandler.js';
 import { AppError } from '../../shared/utils/appError.js';
 import * as quranService from './quran.service.js';
-import { versesParamsSchema, versesQuerySchema } from './quran.validation.js';
+import {
+  versesParamsSchema,
+  verseParamsSchema,
+  versesQuerySchema,
+} from './quran.validation.js';
 
 export const getChapters = asyncHandler(async (req, res) => {
   const chapters = await quranService.getChapters();
@@ -21,6 +25,20 @@ export const getVerses = asyncHandler(async (req, res) => {
     reciterId: query.data.reciter,
   });
   res.json({ success: true, data: verses, meta: pagination });
+});
+
+export const getVerse = asyncHandler(async (req, res) => {
+  const params = verseParamsSchema.safeParse(req.params);
+  const query = versesQuerySchema.safeParse(req.query);
+  if (!params.success || !query.success) {
+    throw new AppError('مدخلات غير صالحة', 400, 'VALIDATION_ERROR');
+  }
+  const verse = await quranService.getVerse({
+    chapter: params.data.chapter,
+    verse: params.data.verse,
+    reciterId: query.data.reciter,
+  });
+  res.json({ success: true, data: verse });
 });
 
 export const getReciters = asyncHandler(async (req, res) => {
