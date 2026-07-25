@@ -5,7 +5,8 @@ import rateLimit from 'express-rate-limit';
 import { env } from '../config/env.js';
 
 export const securityMiddleware = [
-  helmet(),
+  // CSP معطّل لأن الواجهة تحمّل خطوط Google وسكربت الثيم المضمّن
+  helmet({ contentSecurityPolicy: false }),
   cors({ origin: env.allowedOrigins, credentials: true }),
 ];
 

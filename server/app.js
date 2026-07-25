@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import {
   securityMiddleware,
@@ -25,6 +27,16 @@ app.use('/api/v1/progress', progressRoutes);
 
 app.get('/api/v1/health', (req, res) =>
   res.json({ success: true, data: { status: 'ok' } })
+);
+
+// تقديم الواجهة المبنية (SPA) — أي مسار غير /api يرجع index.html
+const clientDist = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../client/dist'
+);
+app.use(express.static(clientDist, { maxAge: '1d', index: false }));
+app.get(/^(?!\/api).*/, (req, res) =>
+  res.sendFile(path.join(clientDist, 'index.html'))
 );
 
 app.use(notFoundHandler);
