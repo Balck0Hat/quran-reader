@@ -22,6 +22,11 @@ const BookmarksPage = lazy(() =>
     default: m.BookmarksPage,
   }))
 );
+const StatsPage = lazy(() =>
+  import('../features/progress/index.js').then((m) => ({
+    default: m.StatsPage,
+  }))
+);
 
 export const AppRouter = () => (
   <BrowserRouter>
@@ -31,6 +36,7 @@ export const AppRouter = () => (
         <Route path="/surah/:chapterId" element={<ReaderPage />} />
         <Route path="/surah/:chapterId/ayah/:verseNumber" element={<AyahPage />} />
         <Route path="/bookmarks" element={<BookmarksPage />} />
+        <Route path="/stats" element={<StatsPage />} />
         <Route path="*" element={<SurahIndexPage />} />
       </Routes>
     </Suspense>

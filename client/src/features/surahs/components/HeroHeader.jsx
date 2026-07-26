@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Bookmark } from 'lucide-react';
+import { Bookmark, ChartPie } from 'lucide-react';
 import { ThemeToggle } from '../../../shared/components/ui/index.js';
 import { toArabicNumber } from '../../../shared/utils/arabicNumber.js';
 
@@ -12,6 +12,14 @@ const HeroHeader = ({ totalRead }) => {
     <header className="relative overflow-hidden border-b border-neutral-200 dark:border-neutral-900">
       <div className="pattern-bg absolute inset-0" aria-hidden="true" />
       <div className="absolute end-4 top-4 z-10 flex items-center gap-1">
+        <Link
+          to="/stats"
+          aria-label="إحصائياتي"
+          title="إحصائياتي"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-neutral-600 transition-colors hover:bg-primary-100 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-primary-400"
+        >
+          <ChartPie className="h-5 w-5" aria-hidden="true" />
+        </Link>
         <Link
           to="/bookmarks"
           aria-label="العلامات المرجعية"
