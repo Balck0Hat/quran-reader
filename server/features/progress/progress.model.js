@@ -10,6 +10,9 @@ const progressSchema = new mongoose.Schema(
     // Highest verse read per chapter: { "2": 45 } means reached ayah 45 of al-Baqarah.
     chaptersRead: { type: Map, of: Number, default: {} },
     bookmarks: { type: [String], default: [] },
+    dailyGoal: { type: Number, default: 10, min: 1, max: 500 },
+    // Ayahs read per day: { "2026-07-26": 14 }
+    dailyLog: { type: Map, of: Number, default: {} },
   },
   { timestamps: true }
 );

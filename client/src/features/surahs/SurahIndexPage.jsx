@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ErrorState } from '../../shared/components/ui/index.js';
 import { toArabicNumber } from '../../shared/utils/arabicNumber.js';
-import { useProgressStore } from '../progress/index.js';
+import { useProgressStore, WirdCard } from '../progress/index.js';
 import { useChapters } from './hooks/useChapters.js';
 import HeroHeader from './components/HeroHeader.jsx';
 import ContinueCard from './components/ContinueCard.jsx';
@@ -50,6 +50,7 @@ const SurahIndexPage = () => {
         {hasStarted && (
           <ContinueCard lastPosition={lastPosition} chapters={chapters} />
         )}
+        <WirdCard />
         <SurahSearch value={search} onChange={setSearch} />
         {error ? (
           <ErrorState message={error} onRetry={reload} />

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookCheck, Bookmark, CheckCircle2, LibraryBig, Sparkles } from 'lucide-react';
+import { ArrowRight, BookCheck, Bookmark, CalendarCheck, CheckCircle2, Flame, LibraryBig, Sparkles } from 'lucide-react';
 import { ThemeToggle } from '../../shared/components/ui/index.js';
 import { toArabicNumber } from '../../shared/utils/arabicNumber.js';
 import { useProgressStore } from './store/progressStore.js';
@@ -8,6 +8,8 @@ import { fetchChapterNames } from './services/quranRefs.service.js';
 import ProgressRing from './components/ProgressRing.jsx';
 import StatTile from './components/StatTile.jsx';
 import SurahProgressRow from './components/SurahProgressRow.jsx';
+import WeekBars from './components/WeekBars.jsx';
+import { todayKey, computeStreak } from './utils/wird.js';
 
 const TOTAL_AYAHS = 6236;
 
@@ -20,7 +22,11 @@ const SectionTitle = ({ children }) => (
 const StatsPage = () => {
   const chaptersRead = useProgressStore((state) => state.chaptersRead);
   const bookmarks = useProgressStore((state) => state.bookmarks);
+  const dailyLog = useProgressStore((state) => state.dailyLog);
+  const dailyGoal = useProgressStore((state) => state.dailyGoal);
   const [chapters, setChapters] = useState(null);
+  const streak = computeStreak(dailyLog, dailyGoal);
+  const todayCount = dailyLog[todayKey()] || 0;
 
   useEffect(() => {
     fetchChapterNames().then(setChapters).catch(() => {});
@@ -89,9 +95,17 @@ const StatsPage = () => {
               <div className="grid w-full flex-1 grid-cols-1 gap-3 sm:max-w-sm">
                 <StatTile icon={LibraryBig} value={stats.totalRead} total={TOTAL_AYAHS} label="آية مقروءة" />
                 <StatTile icon={BookCheck} value={stats.completed.length} total={114} label="سورة مكتملة" />
+                <StatTile icon={Flame} value={streak} label={streak === 1 ? 'يوم متتالٍ على الورد' : 'أيام متتالية على الورد'} />
                 <StatTile icon={Bookmark} value={bookmarks.length} label="علامة مرجعية" />
               </div>
             </div>
+
+            <SectionTitle>آخر سبعة أيام</SectionTitle>
+            <WeekBars dailyLog={dailyLog} goal={dailyGoal} />
+            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+              <CalendarCheck className="me-1 inline h-3.5 w-3.5 align-text-bottom" aria-hidden="true" />
+              قرأت اليوم {toArabicNumber(todayCount)} آية من هدفك ({toArabicNumber(dailyGoal)})
+            </p>
 
             {stats.completed.length > 0 && (
               <>

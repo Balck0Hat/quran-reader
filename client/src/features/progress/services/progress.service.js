@@ -13,3 +13,13 @@ export const patchProgress = async (payload) => {
   });
   return data;
 };
+
+// إرسال فوري عند إغلاق الصفحة — keepalive يُكمل الطلب بعد مغادرة الصفحة
+export const sendProgressBeacon = (payload) => {
+  fetch(`/api/v1/progress/${getDeviceId()}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch(() => {});
+};
