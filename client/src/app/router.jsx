@@ -27,6 +27,11 @@ const StatsPage = lazy(() =>
     default: m.StatsPage,
   }))
 );
+const AdhkarPage = lazy(() =>
+  import('../features/adhkar/index.js').then((m) => ({
+    default: m.AdhkarPage,
+  }))
+);
 
 export const AppRouter = () => (
   <BrowserRouter>
@@ -37,6 +42,7 @@ export const AppRouter = () => (
         <Route path="/surah/:chapterId/ayah/:verseNumber" element={<AyahPage />} />
         <Route path="/bookmarks" element={<BookmarksPage />} />
         <Route path="/stats" element={<StatsPage />} />
+        <Route path="/adhkar" element={<AdhkarPage />} />
         <Route path="*" element={<SurahIndexPage />} />
       </Routes>
     </Suspense>
