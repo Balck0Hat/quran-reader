@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, RotateCcw, Sunrise, Sunset, MoonStar, HandHeart } from 'lucide-react';
+import { ArrowRight, RotateCcw, Sunrise, Sunset, MoonStar, HandHeart, CircleDotDashed } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ThemeToggle } from '../../shared/components/ui/index.js';
 import { toArabicNumber } from '../../shared/utils/arabicNumber.js';
@@ -8,8 +8,10 @@ import { cn } from '../../shared/utils/cn.js';
 import { ADHKAR_CATEGORIES } from './data/index.js';
 import { useAdhkarDay } from './hooks/useAdhkarDay.js';
 import DhikrCard from './components/DhikrCard.jsx';
+import TasbihPanel from './components/TasbihPanel.jsx';
 
 const ICONS = { Sunrise, Sunset, MoonStar, HandHeart };
+const TASBIH_TAB = { key: 'tasbih', label: 'المسبحة' };
 
 const defaultCategory = () => {
   const hour = new Date().getHours();
@@ -21,7 +23,8 @@ const defaultCategory = () => {
 const AdhkarPage = () => {
   const [active, setActive] = useState(defaultCategory);
   const { counts, increment, resetCategory } = useAdhkarDay();
-  const category = ADHKAR_CATEGORIES.find((item) => item.key === active);
+  const isTasbih = active === TASBIH_TAB.key;
+  const category = ADHKAR_CATEGORIES.find((item) => item.key === active) || ADHKAR_CATEGORIES[0];
 
   const doneCount = useMemo(
     () => category.items.filter((dhikr) => (counts[dhikr.id] || 0) >= dhikr.count).length,
@@ -53,26 +56,30 @@ const AdhkarPage = () => {
             <ArrowRight className="h-5 w-5" aria-hidden="true" />
           </Link>
           <h1 className="font-display text-xl text-neutral-900 dark:text-neutral-100">الأذكار</h1>
-          <span className="text-sm text-neutral-500 dark:text-neutral-400">
-            · {toArabicNumber(doneCount)} من {toArabicNumber(category.items.length)}
-          </span>
+          {!isTasbih && (
+            <span className="text-sm text-neutral-500 dark:text-neutral-400">
+              · {toArabicNumber(doneCount)} من {toArabicNumber(category.items.length)}
+            </span>
+          )}
           <div className="ms-auto flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => resetCategory(category.items.map((item) => item.id))}
-              aria-label="إعادة تصفير هذا القسم"
-              title="إعادة تصفير هذا القسم"
-              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-neutral-600 transition-colors hover:bg-primary-100 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-neutral-400 dark:hover:bg-neutral-900"
-            >
-              <RotateCcw className="h-5 w-5" aria-hidden="true" />
-            </button>
+            {!isTasbih && (
+              <button
+                type="button"
+                onClick={() => resetCategory(category.items.map((item) => item.id))}
+                aria-label="إعادة تصفير هذا القسم"
+                title="إعادة تصفير هذا القسم"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full text-neutral-600 transition-colors hover:bg-primary-100 hover:text-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-neutral-400 dark:hover:bg-neutral-900"
+              >
+                <RotateCcw className="h-5 w-5" aria-hidden="true" />
+              </button>
+            )}
             <ThemeToggle />
           </div>
         </div>
 
         <div role="tablist" aria-label="أقسام الأذكار" className="mx-auto flex max-w-3xl gap-1 overflow-x-auto px-4 pb-2">
-          {ADHKAR_CATEGORIES.map((item) => {
-            const Icon = ICONS[item.icon];
+          {[...ADHKAR_CATEGORIES, TASBIH_TAB].map((item) => {
+            const Icon = ICONS[item.icon] || CircleDotDashed;
             return (
               <button
                 key={item.key}
@@ -97,19 +104,25 @@ const AdhkarPage = () => {
       </header>
 
       <div className="mx-auto flex max-w-3xl flex-col gap-3 px-4 pt-6">
-        {allDone && (
-          <p className="rounded-xl border border-success-500/40 bg-success-500/5 px-4 py-3 text-center text-sm font-medium text-success-500">
-            ما شاء الله — أتممت {category.label} اليوم ✓
-          </p>
+        {isTasbih ? (
+          <TasbihPanel />
+        ) : (
+          <>
+            {allDone && (
+              <p className="rounded-xl border border-success-500/40 bg-success-500/5 px-4 py-3 text-center text-sm font-medium text-success-500">
+                ما شاء الله — أتممت {category.label} اليوم ✓
+              </p>
+            )}
+            {category.items.map((dhikr) => (
+              <DhikrCard
+                key={dhikr.id}
+                dhikr={dhikr}
+                done={counts[dhikr.id] || 0}
+                onCount={handleCount}
+              />
+            ))}
+          </>
         )}
-        {category.items.map((dhikr) => (
-          <DhikrCard
-            key={dhikr.id}
-            dhikr={dhikr}
-            done={counts[dhikr.id] || 0}
-            onCount={handleCount}
-          />
-        ))}
       </div>
     </main>
   );
